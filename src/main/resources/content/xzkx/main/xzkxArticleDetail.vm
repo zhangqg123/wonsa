@@ -1,0 +1,128 @@
+#set($version='?v=0.0.7')
+<!DOCTYPE html>
+<html lang="en">
+<title>通告列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+#parse("content/base/back/common/head.vm")
+<!--UEditor-->
+<script type="text/javascript"  charset="utf-8" src="$!{basePath}/content/plug-in/ueditor/ueditor.config.js"></script>
+<script type="text/javascript"  charset="utf-8" src="$!{basePath}/content/plug-in/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="$!{basePath}/content/plug-in/ueditor/lang/zh-cn/zh-cn.js"></script>
+	<style type="text/css">
+		*{
+		    font-size: 16px;
+		}
+	</style>
+<body style='overflow:scroll;overflow-x:hidden'>
+	<div class="container bs-docs-container" style="width:100%;">
+		<div class="row">
+			<div class="panel panel-default">
+				<div class="panel-heading">详细</div>
+				<div class="panel-body">
+					<form class="form-horizontal" role="form">
+						<input type="hidden" id="btn_sub" class="btn_sub" />
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">标题</label>
+							<div class="col-sm-8">
+								<input type="text" name="title" value="$!{xzkxArticle.title}" id="title" class="form-control" readonly/>
+							</div>
+						</div>
+						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">栏目</label>
+							<div class="col-sm-8">
+								<input type="text" value="$!{xzkxArticle.columnId}" id="columnId" readonly class="form-control" readonly"/>
+							</div>
+						</div>
+						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">是否发布</label>
+							<div class="col-sm-8">
+								#if($!xzkxArticle.publish=='Y') <input type="text" value="是" readonly class="form-control"/> #end
+								#if($!xzkxArticle.publish=='N') <input type="text" value="否" readonly class="form-control"/> #end
+							</div>
+						</div>
+						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">发布时间</label>
+							<div class="col-sm-8">
+								<input type="text" value="$!dateTool.format("yyyy-MM-dd",$!{xzkxArticle.publishDate})" name="publishDate" id="publishDate" class="form-control" readonly/>
+							</div>
+						</div>
+						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">作者</label>
+							<div class="col-sm-8">
+								<input type="text" value="$!{xzkxArticle.author}" name="author" id="author" class="form-control" readonly/>
+							</div>
+						</div>
+						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">标签</label>
+							<div class="col-sm-8">
+								<input type="text" value="$!{xzkxArticle.label}" name="label" id="label" class="form-control" readonly/>
+							</div>
+						</div>
+						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">图片地址</label>
+							<div class="col-sm-8">
+								<div id="pic_view_div" style="width:180px; height:150px; display:none;">
+									<img src="" width="180" height="150" id="pic_view" />
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">内容</label>
+							<div class="col-sm-8">
+								<textarea name="content" id="content" style="width: 880px;height:300px">$!{xzkxArticle.content}</textarea>
+							    <script type="text/javascript">
+							        var editor = UE.getEditor('content',{
+										readonly:true
+									});
+							    </script>
+							</div>
+						</div>
+                        <div class="form-group mno">
+							<div class="col-sm-offset-1 col-sm-6">
+								<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/p3/xzkx/xzkxArticle.do?list')">返回</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/Validform_v5.3.2.js"></script> 
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/forminit.p3.js"></script>
+<script t>
+	jQuery(document).ready(function(){
+		if("$!{xzkxArticle.imageHref}" !=  ""){
+            $("#pic_view_div").show();
+            $("#pic_view").attr("src",'$!{basePath}/upload/img/xzkx/$!{xzkxArticle.imageHref}');
+		}
+		
+		jQuery.ajax({  
+	        async : false,  
+	        cache:false,  
+	        type: 'POST',  
+	        dataType : "json",  
+	        url: '$!{basePath}/p3/xzkx/xzkxMenu.do?tree',//请求的action路径  
+	        error: function () {//请求失败处理函数  
+	            alert('请求失败');
+	        },  
+	        success:function(data){ //请求成功后处理函数。   
+				jQuery.each( data, function(i, n){
+					if(n.id == jQuery("#columnId").val())
+						jQuery("#columnId").val(n.name);
+                });
+	        }
+	    });  
+	});
+</script>
+</script>

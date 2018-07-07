@@ -1,0 +1,19 @@
+INSERT  INTO
+	xzkx_ad
+      ( 
+      id                            
+      ,create_name                    
+      ,create_by                      
+      ,create_date                    
+      ,title                          
+      ,image_href                     
+      ) 
+values
+      (
+      :xzkxAd.id                            
+      ,:xzkxAd.createName                    
+      ,:xzkxAd.createBy                      
+      ,:xzkxAd.createDate                    
+      ,:xzkxAd.title                         
+      ,:xzkxAd.imageHref                     
+      )

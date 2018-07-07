@@ -1,0 +1,86 @@
+#parse("content/base/back/common/macro.vm")
+<!DOCTYPE html>
+<html lang="en">
+<title>通告列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+#parse("content/base/back/common/head.vm")
+	<style type="text/css">
+		*{
+		    font-size: 16px;
+		}
+	</style>
+<body style='overflow:scroll;overflow-x:hidden'>
+	<div class="container bs-docs-container" style="width:100%;">
+		<div class="row">
+			<form role="form" class="form-inline" action="$!{basePath}/p3/xzkx/index.do?myArticleList" method="post"  id="formSubmit">
+				<div  class="col-md-10" style="width:100%">
+					<div class="panel panel-default">
+						<div class="panel-heading">通告列表</div>
+						<div class="panel-body">							
+							<table class="table table-striped">
+								<thead>
+                                    <th>标题</th>
+                                    <th>状态</th>
+		                            <th>操作</th>
+								</thead>
+								<tbody>
+									#if($!{pageInfos})
+										#foreach($!{info} in $!{pageInfos})
+											<tr>			
+                                                <td>$!{info.title}</td>
+                                                <td>
+	                                                #if($!{info.qianshou}=="qianshou")
+	                                                	<span style="color:#58da49">已签收</span>
+	                                                #else
+	                                                	<span style="color:#e43b18">未签收</span>
+	                                                #end
+                                                </td>
+												<td class="last">
+													<a href="javascript:doUrl('$!{basePath}/p3/xzkx/xzkxController.do?goPage&page=article&articleid=$!{info.id}')">查看</a>
+												</td>
+                                                
+											</tr>
+										#end
+									#end
+								</tobody>
+							</table>
+							<div class="text-right">
+								<!--公用翻页代码-->
+								<input type="hidden" name="page" id="page" value="1"/>
+								<ul class="pagination">
+						        	<input type="hidden" value="1" name="pageNo" id="pageNo" />
+						        	<li><span>共$!{pageInfos.totalPage}页,$!{pageInfos.totalItem}项</span></li>
+						            <li>
+							            #if($!{pageInfos.index}==1)
+							            	<a href="#" disabled >&laquo;</a>						            
+							            #else
+							            	<a href="javascript:jQuery('#pageNo').val('$!{pageInfos.PreviousPage}');document.getElementById('formSubmit').submit();" >&laquo;</a>
+							            #end
+						            </li>
+						            <li><span>$!{pageInfos.index}</span></li>
+						            <li>
+							            #if($!{pageInfos.index}==$!{pageInfos.totalPage})
+							            	<a href="#" disabled >&laquo;</a>						            
+							            #else
+								            <a href = "javascript:jQuery('#pageNo').val('$!{pageInfos.nextPage}');document.getElementById('formSubmit').submit();">&raquo;</a>
+							            #end
+						            </li>
+						        </ul>
+						        <script type="text/javascript">
+						    	</script>
+								<!--END公用翻页代码-->
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+ 
+	<script type="text/javascript">
+    </script>
+</body>
+</html>
+<script type="text/javascript" src="$!{basePath}/plug-in/js/jquery-ui.js"></SCRIPT>

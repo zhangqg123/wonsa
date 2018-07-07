@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>编辑</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+#parse("content/base/back/common/head.vm")
+  <link type="text/css" rel="stylesheet" href="$!{basePath}/content/qywx/plug-in/weixin/css/appmsg_edit.css" />
+  <link type="text/css" rel="stylesheet" href="$!{basePath}/content/qywx/plug-in/weixin/css/jquery.fileupload.css" />
+  <link type="text/css" rel="stylesheet" href="$!{basePath}/content/qywx/plug-in/weixin/css/tablefrom.css" />
+  <!--fileupload-->
+  <script type="text/javascript" src="$!{basePath}/content/qywx/plug-in/weixin/js/vendor/jquery.ui.widget.js"></script>
+  <script type="text/javascript" src="$!{basePath}/content/qywx/plug-in/weixin/js/load-image.min.js"></script>
+  <script type="text/javascript" src="$!{basePath}/content/qywx/plug-in/weixin/js/jquery.fileupload.js"></script>
+  <script type="text/javascript" src="$!{basePath}/content/qywx/plug-in/weixin/js/jquery.fileupload-process.js"></script>
+  <script type="text/javascript" src="$!{basePath}/content/qywx/plug-in/weixin/js/jquery.fileupload-image.js"></script>
+  <script type="text/javascript" src="$!{basePath}/content/qywx/plug-in/weixin/js/jquery.iframe-transport.js"></script>
+    <script src = "$!{basePath}/content/xzkx/main/xzkxArticle-edit.js"></script>	
+<!--UEditor-->
+<script type="text/javascript"  charset="utf-8" src="$!{basePath}/plug-in/ueditor/ueditor.config.js"></script>
+<script type="text/javascript"  charset="utf-8" src="$!{basePath}/plug-in/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="$!{basePath}/plug-in/ueditor/lang/zh-cn/zh-cn.js"></script>
+	
+	<style type="text/css">
+		*{
+		    font-size: 16px;
+		}
+		.form-control{
+			font-size:16px
+		}
+		.ztree {
+		    width: 260px !important;
+		}		
+		.ztree * {
+		    font-size: 16px;
+		}		
+	</style>
+<body style='overflow:scroll;overflow-x:hidden'>
+	<div class="container bs-docs-container" style="width:100%;">
+		<div class="row">
+			<div class="panel panel-default">
+<!--				<div class="panel-heading">新增</div>	-->
+				<div class="panel-body">
+					<form class="form-horizontal" role="form" id="dailogForm" action="$!{basePath}/p3/xzkx/index.do?doEdit" method="POST">
+						<input type="hidden" id="id" name="id" value="$!{xzkxArticle.id}"/>
+						<input type="hidden" id="btn_sub" class="btn_sub" />
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">标题</label>
+							<div class="col-xs-9 col-sm-4">
+								<input type="text" name="title" id="title" value="$!{xzkxArticle.title}" class="form-control" datatype="*"/>
+							</div>
+						</div>
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">接收部门</label>
+							<div class="col-xs-9 col-sm-4">
+								<input type="text" readonly="readonly" value="" id="parentGroupId" readonly class="form-control" onclick="showMenu();"/>
+								<input type="hidden" value="$!{xzkxArticle.department}" name="department" id="pId" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">作者</label>
+							<div class="col-xs-9 col-sm-4">
+								<input type="text" name="author" id="author" value="$!{xzkxArticle.author}" class="form-control" />	
+							</div>
+						</div>
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">栏目</label>
+							<div class="col-xs-9 col-sm-4">
+						<!--		<input type="text" value="" id="columnId" readonly class="form-control" onclick="showMenu();"/>	-->
+								<select name="columnId" id="columnId" class="form-control">
+								 #foreach($item in $menuList)
+						<!--			<option value="${item.id}" #if($!{xzkxArticle.columnId} == ${item.id})selected#end>$!{item.name}</option>	-->
+									#if($!{item.parentCode} != "")
+										<option value="${item.id}" #if($!{xzkxArticle.columnId} == ${item.id})selected#end>--$!{item.name}</option>
+									#else
+										#if($!{item.type} == "link")
+											<option value="${item.id}" #if($!{xzkxArticle.columnId} == ${item.id})selected#end>$!{item.name}</option>
+										#else
+											<option disabled="disabled" value="${item.id}" #if($!{xzkxArticle.columnId} == ${item.id})selected#end>$!{item.name}</option>
+										#end
+									#end
+								 #end
+								</select>
+							</div>
+						</div>						
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">发布时间</label>
+							<div class="col-xs-9 col-sm-4">
+								<input type="text" value="$!dateTool.format("yyyy-MM-dd",$!{xzkxArticle.publishDate})" name="publishDate" id="publishDate" class="form-control" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})"   style="background: url('$!{basePath}/plug-in-ui/images/datetime.png') no-repeat scroll right center transparent;" datatype="*"/>
+							</div>
+						</div>
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">标签</label>
+							<div class="col-xs-9 col-sm-4">
+								<input type="text" name="label" id="label" value="$!{xzkxArticle.label}" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">转发url</label>
+							<div class="col-xs-9 col-sm-4">
+								<input type="text" value="$!{xzkxArticle.extUrl}" name="extUrl" id="extUrl" class="form-control" />
+							</div>
+						</div>
+
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">图片地址</label>
+							<div class="col-xs-9 col-sm-4">
+								<span class="btn btn-success fileinput-button">
+							        <i class="glyphicon glyphicon-plus"></i>
+							        <span>浏览</span> 
+							        <!-- The file input field used as target for the file upload widget -->
+							        <input id="fileupload" type="file" name="files[]" >
+							        <input id="imageHref" name="imageHref" value="$!{xzkxArticle.imageHref}" type="hidden" datatype="*" nullmsg="请添加图片">
+							    </span>
+							    <span id="imgName"></span> 
+								<span class="Validform_checktip"></span>
+							</div>
+						</div>
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;"></label>
+							<div class="col-xs-9 col-sm-4">
+								<div class="appmsg_info">
+									<em class="appmsg_date"></em>
+								</div>
+								<div id="files" class="files">
+								<!--	<i class="appmsg_thumb default">图片</i>	-->
+									<i style="height:160px;overflow:hidden;display:inline-block;width:100%;"><img src="$!{basePath}/upload/img/xzkx/$!{xzkxArticle.imageHref}" width="160" height="160" /></i>
+								</div>
+								 <div id="progress" class="progress">
+							        <div class="progress-bar progress-bar-success"></div>
+							    </div>
+								<p class="appmsg_desc"></p>
+							</div>	
+						</div>
+
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">是否发布</label>
+							<div class="col-xs-9 col-sm-4">
+								<select name="publish" id="publish"  class="form-control">
+									<option value="Y" #if($!xzkxArticle.publish=='Y') selected #end>是</option>
+									<option value="N" #if($!xzkxArticle.publish=='N') selected #end>否</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group mno">
+							<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">内容</label>
+							<div class="col-xs-9 col-sm-4">
+								<textarea name="content" id="content" style="height:200px">$!{xzkxArticle.content}</textarea>
+							    <script type="text/javascript">
+							        var editor = UE.getEditor('content');
+							    </script>
+							</div>
+						</div>
+                        <div class="form-group mno">
+							<div class="col-sm-offset-1 col-sm-6">
+								<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/p3/xzkx/index.do?articleList')">返回</button>
+								<button type="button" class="btn btn-primary" id="formSubmit">提交</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="menuContent" class="menuContent" style="display:none; position: absolute;z-index:100;">
+    	<ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.core.js$!{version}"></script>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.excheck.js$!{version}"></script>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.exedit.js$!{version}"></script>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/Validform_v5.3.2.js"></script> 
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/forminit.p3.js"></script> 
+<script type="text/javascript">
+var IDMark_A = "_a";
+
+function showMenu() {
+var cityObj = $("#parentGroupId");
+var cityOffset = $("#parentGroupId").offset();
+	if($("#menuContent").is(':hidden')){
+     $("#menuContent").css({left:cityOffset.left + "px", top:cityOffset.top + cityObj.outerHeight() + "px"}).slideDown("fast");
+	}else{
+	  $("#menuContent").fadeOut("fast");
+	}
+    $("body").bind("mousedown", onBodyDown);
+}
+function hideMenu() {
+	$("#menuContent").fadeOut("fast");
+	$("body").unbind("mousedown", onBodyDown);
+}
+function onBodyDown(event) {
+	if (!(event.target.id == "parentGroupId" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+		hideMenu();
+	}
+}
+var setting = {
+//			check: {
+//				enable: true,
+//				chkStyle: "radio",
+//				radioType: "all"
+//			},
+				check: {
+					enable: true,
+					radioType: "all",
+					chkboxType:{"Y" : "undefined", "N" : "" }
+				},
+			view: {
+				addHoverDom: addHoverDom,
+				removeHoverDom: removeHoverDom,
+				dblClickExpand: false
+			},
+			data: {
+				simpleData: {
+					enable: true,
+					idKey: "id",
+					pIdKey: "pId",
+					rootPId: null
+				}
+			},
+			callback: {
+				onClick: onClick,
+				onCheck: onCheck
+			}
+		};
+function onClick(e, treeId, treeNode) {
+   var tree = zTree.getZTreeObj("treeDemo");
+	tree.checkNode(treeNode, !treeNode.checked, null, true);
+	return false;
+}
+function onCheck(e, treeId, treeNode) {
+	var tree = zTree.getZTreeObj("treeDemo"),
+	nodes = tree.getCheckedNodes(true),
+	v = "",vid = "";
+	for (var i=0, l=nodes.length; i<l; i++) {
+		v += nodes[i].name + ",";
+		vid += nodes[i].id + ",";
+	}
+	if (v.length > 0 ) v = v.substring(0, v.length-1);
+	if (vid.length > 0 ) vid = vid.substring(0, vid.length-1);
+	$("#parentGroupId").val(v);
+	$("#pId").val(vid);
+}
+function addHoverDom(treeId, treeNode) {
+	if (treeNode.parentNode && treeNode.parentNode.id!=1) return;
+	var aObj = $("#" + treeNode.tId + IDMark_A);
+		if ($("#diyBtn_"+treeNode.id).length>0) return;
+		//var editStr = "<span id='diyBtn_" +treeNode.id+ "'>编码:"+treeNode.id+"</span>";
+		//aObj.after(editStr);
+}
+function removeHoverDom(treeId, treeNode) {
+		$("#diyBtn_"+treeNode.id).unbind().remove();
+		$("#diyBtn_space_" +treeNode.id).unbind().remove();
+}
+var zNodes;
+ $(document).ready(function(){
+    var basePath="$!{basePath}";
+	initUpload(basePath);
+
+	jQuery.ajax({  
+	        async : false,  
+	        cache:false,  
+	        type: 'POST',  
+	        dataType : "json",  
+	        url: "$!{basePath}/qywx/mobileGroupMsg.do?getAuthTree",//请求的action路径  
+	        error: function () {//请求失败处理函数  
+	            alert('请求失败');  
+	        },  
+	        success:function(data){ //请求成功后处理函数。    
+	            zNodes = data.obj;   //把后台封装好的简单Json格式赋给zNodes  
+	        }  
+	    });  
+	zTree.init($("#treeDemo"), setting, zNodes);
+	var strs=$("#pId").val().split(",");
+	var node;
+	sname="";
+	var treeObj = zTree.getZTreeObj("treeDemo");
+	for (var i=0, l=strs.length; i<l; i++) {
+		node=treeObj.getNodeByParam("id", strs[i]);
+		treeObj.selectNode(node);
+		treeObj.checkNode(node, true, null, false);
+		sname += node.name + ",";
+	}
+	if (sname.length > 0 ) sname = sname.substring(0, sname.length-1);
+	$("#parentGroupId").val(sname);
+	
+});
+</script>

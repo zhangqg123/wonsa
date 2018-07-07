@@ -1,0 +1,23 @@
+INSERT  INTO
+	xzkx_style
+      ( 
+      ID                            
+      ,CREATE_DATE                    
+      ,CREATE_NAME                    
+      ,REVIEW_IMG_URL                 
+      ,TEMPLATE_NAME                  
+      ,TEMPLATE_URL                   
+      ,UPDATE_DATE                    
+      ,UPDATE_NAME                    
+      ) 
+values
+      (
+      :xzkxStyle.id                            
+      ,:xzkxStyle.createDate                    
+      ,:xzkxStyle.createName                    
+      ,:xzkxStyle.reviewImgUrl                  
+      ,:xzkxStyle.templateName                  
+      ,:xzkxStyle.templateUrl                   
+      ,:xzkxStyle.updateDate                    
+      ,:xzkxStyle.updateName                    
+      )

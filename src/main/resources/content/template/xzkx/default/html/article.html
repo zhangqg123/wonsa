@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>${xzkxData.title}</title>
+		<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+  		<link type="text/css" rel="stylesheet" href="${xzkxData.basePath}/content/template/xzkx/default/css/xzkx.css" />
+	    <script type='text/javascript' src='${xzkxData.basePath}/content/common/js/jquery-1.8.3.js'></script>
+		<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	    <style type="text/css">
+	    body {
+			padding: 0;
+			font-family: '宋体';
+		    font-size: 16px;
+			background: #fff;
+		}
+	    .title{
+		    display: block;
+			font-size: 2em;
+			-webkit-margin-before: 0.67em;
+			-webkit-margin-after: 0.67em;
+			-webkit-margin-start: 0px;
+			-webkit-margin-end: 0px;
+			font-weight: bold;
+			text-align:center;
+	    }
+	    .activity-info {
+			border-top: 1px dotted #ccc;
+			text-align:center;
+	    }
+	    .activity-meta {
+			display: inline-block;
+			line-height: 16px;
+			vertical-align: middle;
+			text-align:center;
+			margin-left: 8px;
+			padding-top: 2px;
+			padding-bottom: 2px;
+			color: #8c8c8c;
+			font-size: 11px;
+		}
+		.content{
+			width: 95%;
+			margin: 0 auto;
+			padding: 5px 5px;
+		}
+		.content img {
+		    max-width: 100% !important;
+		    height: auto !important;
+		}
+		.sign{
+		    float: right;
+		    line-height: 44px;
+		    font-size: 16px;
+		    color: #fff;
+		    padding: 0 20px;
+		}
+	    </style>
+	    <script type="text/javascript">
+	    	var count=0;
+	    	$(document).ready(function(){
+	    		var tmp='${xzkxData.sign}';
+	    		if (tmp=="文章签收"){
+					var articleid = '${xzkxData.article.id}';
+					var name = '${xzkxData.article_record.name}';
+					var department = '${xzkxData.article_record.department}';
+					var userid = '${xzkxData.article_record.userid}';
+					$.ajax({
+		           		url:'index.do?addRecord',
+		           		method:"POST",
+		           		dataType:"JSON",
+		           		data:{articleid:articleid,userid:userid,name:name,department:department},
+		           		success:function(data){
+		           		   if(data.success){
+//		           		   		alert(data.msg);
+		           		   		count=1;
+		           		   		$("#qianshou").text("签收记录");		           		   		
+//		           		   		$("#qianshou").attr("disabled","disabled");
+		           		   }else{
+		           		   		alert(data.msg);
+		           		   }
+		           		}
+		        	});
+				}else{
+//					alert(tmp);
+				}
+			    $('.content').on('click', 'img',function(event) {
+			        var imgArray = [];
+			        var curImageSrc = $(this).attr('src');
+			        var oParent = $(this).parent();
+			        if (curImageSrc && !oParent.attr('href')) {
+			            $('.content img').each(function(index, el) {
+			                var itemSrc = $(this).attr('src');
+			                imgArray.push(itemSrc);
+			            });
+			            wx.previewImage({
+			                current: curImageSrc,
+			                urls: imgArray
+			            });
+			        }
+			    });
+	    		
+	    	});
+		</script>
+	</head>
+	<body>
+		<header class="w-header" mon="type=header">
+			<a class="arrow-wrap" href="javascript:history.back()" mon="content=back">
+			<span class="arrow-left"></span>
+			</a>
+<!-- 			<#if xzkxData.sign??> -->
+<!-- 				<a href="javascript:void(0)" id="link" class="sign" onclick="save('xzkxArticleRecord.do?doAdd',this)" mon="content=sign">${xzkxData.sign}</a> -->
+<!-- 			</#if> -->
+			<div class="text">${xzkxData.title}</div>
+		</header>
+		<div class="detail-area bulk_order_details">
+<!-- 			<div style="text-align: center; padding-top: 5px;padding-bottom: 5px;"><img id="cover" width="50px" height="50px" src="${xzkxData.basePath}/upload/img/xzkx/${xzkxData.article.imageHref }"/></div> -->
+			<div class="activity-info">
+			</div>
+			<div class="content">${xzkxData.article.content }</div>
+		</div>
+		<#if (xzkxData.sign)?? && xzkxData.sign =="文章签收">
+			<div class="w-viewmore clearfix" mon="action=click">
+<!-- 				<a href="javascript:void(0)" id="qianshou" class="op-btn gotop" mon="type=gotop" onclick="save('index.do?addRecord',this)">${xzkxData.sign}</a> -->
+				<a href="${xzkxData.basePath}/p3/xzkx/index.do?recordList&articleid=${xzkxData.article.id}&mainPageNo=1" id="qianshou" class="op-btn gotop" mon="type=gotop" >签收记录</a>
+			</div>
+		<#else>	
+			<div class="w-viewmore clearfix" mon="action=click">
+				<a href="${xzkxData.basePath}/p3/xzkx/index.do?recordList&articleid=${xzkxData.article.id}&mainPageNo=1" id="qianshou" class="op-btn gotop" mon="type=gotop" >签收记录</a>
+			</div>
+		</#if>	
+	</body>
+</html>
